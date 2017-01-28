@@ -1,10 +1,15 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -17,13 +22,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+
+import static co.brookesoftware.mike.smilingpooemoji.R.layout.activity_main;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    private static final int REQUEST_ACHIEVEMENTS = 1;
+    CoordinatorLayout coordinatorMainActivity;
+
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -35,6 +51,24 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        coordinatorMainActivity = (CoordinatorLayout) findViewById(R.id.coordinatorMainActivity);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Check for google play services
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
+                .addApi(Games.API)
+                .addScope(Games.SCOPE_GAMES)
+                .build();
+
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -75,10 +109,15 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
+        if (id == R.id.btnAchievements) {
+            if (mGoogleApiClient.isConnected()) {
+                startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+                        REQUEST_ACHIEVEMENTS);
+            } else {
+                Snackbar snackbar = Snackbar
+                        .make(coordinatorMainActivity, "Google Play Games is not connected", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -95,6 +134,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults){
         switch(requestCode){
             case 50:
@@ -108,4 +148,35 @@ public class MainActivity extends AppCompatActivity
                 }
         }
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ACHIEVEMENTS) {
+
+        }
+    }
+
+    // Google play games connection methods
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Snackbar snackbar = Snackbar
+                .make(coordinatorMainActivity, "Failed to connect to Google Play Games", Snackbar.LENGTH_LONG);
+        snackbar.show();
+        System.out.println("Connection error code: " + connectionResult.getErrorCode());
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_open_durhide));
+        }
+
+        // todo load user info and display in nav drawer
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
 }
