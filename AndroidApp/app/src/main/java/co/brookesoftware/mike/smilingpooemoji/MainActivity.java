@@ -131,9 +131,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.btnAchievements) {
-            if (mGoogleApiClient.isConnected()) {
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
                 startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
                         REQUEST_ACHIEVEMENTS);
+                Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_check_achievements));
             } else {
                 Snackbar snackbar = Snackbar
                         .make(coordinatorMainActivity, "Google Play Games is not connected", Snackbar.LENGTH_LONG)
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
 
         // Run map position initialisation
-        ((MapViewFragment)getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
+        ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
     }
 
     @Override

@@ -5,4 +5,5 @@ Save this file as res/values/games-ids.xml in your project.
 -->
 <resources>
     <string name="achievement_open_durhide">CgkIudXq-9EFEAIQAQ</string>
+    <string name="achievement_check_achievements">CgkIudXq-9EFEAIQAw</string>
 </resources>
