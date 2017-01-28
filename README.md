@@ -36,3 +36,4 @@ This creates the model for each camera and registers it in the backend
 #### UserSettings
 This adds the user settings to the database
 
+	+ Larger number of cameras with different levels
