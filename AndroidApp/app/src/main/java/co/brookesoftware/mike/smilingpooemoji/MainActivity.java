@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -130,16 +131,19 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.btnAchievements) {
-            if (mGoogleApiClient.isConnected()) {
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
                 startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
                         REQUEST_ACHIEVEMENTS);
+                Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_check_achievements));
             } else {
                 Snackbar snackbar = Snackbar
                         .make(coordinatorMainActivity, "Google Play Games is not connected", Snackbar.LENGTH_LONG)
                         .setAction("CONNECT", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+//                                Toast.makeText(getApplicationContext(), "CLICKED ALSO", Toast.LENGTH_LONG).show();
                                 if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+                                    Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
                                     mGoogleApiClient.connect();
                                 }
                             }
@@ -179,9 +183,6 @@ public class MainActivity extends AppCompatActivity
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ACHIEVEMENTS) {
-
-        }
     }
 
     // Google play games connection methods
@@ -192,7 +193,9 @@ public class MainActivity extends AppCompatActivity
                 .setAction("RETRY", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+//                        Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_LONG).show();
                         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+                            Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
                             mGoogleApiClient.connect();
                         }
                     }
@@ -228,7 +231,8 @@ public class MainActivity extends AppCompatActivity
         // Show info(?)
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
 
-        ((MapViewFragment)getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
+        // Run map position initialisation
+        ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
     }
 
     @Override
