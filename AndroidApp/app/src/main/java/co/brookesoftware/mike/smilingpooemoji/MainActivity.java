@@ -6,7 +6,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
 
         coordinatorMainActivity = (CoordinatorLayout) findViewById(R.id.coordinatorMainActivity);
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity
                             public void onClick(View view) {
                                 if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                                     Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
-                                    mGoogleApiClient.connect();
+                                    mGoogleApiClient.clearDefaultAccountAndReconnect();
                                 }
                             }
                         });
@@ -197,12 +196,13 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View view) {
                         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                             Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
-                            mGoogleApiClient.connect();
+                            mGoogleApiClient.clearDefaultAccountAndReconnect();
                         }
                     }
                 });
         snackbar.show();
         System.out.println("Connection error code: " + connectionResult.getErrorCode());
+        Toast.makeText(getApplicationContext(), connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -228,11 +228,9 @@ public class MainActivity extends AppCompatActivity
 
         // Show username
         userNameView.setText(me.getDisplayName());
-        userNameView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         // Show info(?)
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
-        userNameView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         // Run map position initialisation
         ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navLayout"
+    android:id="@+id/navHeaderMain"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/side_nav_bar"
@@ -25,9 +25,9 @@
     <TextView
         android:id="@+id/lblUserName"
         android:layout_width="wrap_content"
-        android:layout_height="0px"
+        android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text=""
+        android:text="DurHide"
         android:textAlignment="center"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/imgUserIcon"
@@ -36,9 +36,9 @@
     <TextView
         android:id="@+id/lblUserInfo"
         android:layout_width="wrap_content"
-        android:layout_height="0px"
+        android:layout_height="wrap_content"
         android:layout_below="@id/lblUserName"
-        android:text=""
+        android:text="Login to Google Play Games!"
         android:textAlignment="center"
         android:layout_centerHorizontal="true" />
 
