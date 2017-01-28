@@ -114,12 +114,7 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
     }
@@ -143,7 +138,7 @@ public class MainActivity extends AppCompatActivity
                             public void onClick(View view) {
                                 if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                                     Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
-                                    mGoogleApiClient.clearDefaultAccountAndReconnect();
+                                    mGoogleApiClient.connect();
                                 }
                             }
                         });
@@ -196,7 +191,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View view) {
                         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                             Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
-                            mGoogleApiClient.clearDefaultAccountAndReconnect();
+                            mGoogleApiClient.connect();
                         }
                     }
                 });
