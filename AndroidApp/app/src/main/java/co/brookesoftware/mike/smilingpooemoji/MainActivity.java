@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -227,9 +228,11 @@ public class MainActivity extends AppCompatActivity
 
         // Show username
         userNameView.setText(me.getDisplayName());
+        userNameView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         // Show info(?)
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
+        userNameView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         // Run map position initialisation
         ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
