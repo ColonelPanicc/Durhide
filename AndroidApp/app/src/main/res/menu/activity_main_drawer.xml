@@ -3,11 +3,10 @@
 
     <group android:checkableBehavior="single">
 
-        <!-- TODO GET BETTER ICON-->
         <item
             android:id="@+id/btnAchievements"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Achievements" />
+            android:icon="@drawable/ic_achieve"
+            android:title="@string/nav_menu_title_achievements" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

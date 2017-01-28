@@ -5,15 +5,11 @@ import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,21 +19,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MapViewFragment extends Fragment implements GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class MapViewFragment extends Fragment {
 
     private MapView mMapView;
     private GoogleMap googleMap;
-    private GoogleApiClient gClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        gClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         System.out.println("inflating");
 
@@ -61,7 +49,7 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMyLocationB
                 // For showing a move to my location button
                 if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
-                    ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},50);
+                    ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MainActivity.REQUEST_LOCATION_PERMISSION);
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -78,10 +66,6 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMyLocationB
         return rootView;
     }
 
-    public boolean onMyLocationButtonClick(){
-        return true;
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -91,13 +75,11 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMyLocationB
     @Override
     public void onStart(){
         super.onStart();
-        gClient.connect();
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        gClient.disconnect();
     }
 
     @Override
@@ -118,11 +100,9 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMyLocationB
         mMapView.onLowMemory();
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onConnected() {
         if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},50);
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -131,20 +111,10 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMyLocationB
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location location = LocationServices.FusedLocationApi.getLastLocation(gClient);
+        Location location = LocationServices.FusedLocationApi.getLastLocation(MainActivity.mGoogleApiClient);
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
 
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(16).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 }

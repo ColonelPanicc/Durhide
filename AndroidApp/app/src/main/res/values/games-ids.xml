@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Google Play game services IDs.
-Save this file as res/values/games-ids.xml in your project.
+Google Play game services IDs, for achievements and the like.
+app_id and app_name are in strings.xml
 -->
 <resources>
     <string name="achievement_open_durhide">CgkIudXq-9EFEAIQAQ</string>
+    <string name="achievement_check_achievements">CgkIudXq-9EFEAIQAw</string>
+    <string name="achievement_check_camera_vision">CgkIudXq-9EFEAIQBA</string>
+    <string name="achievement_get_caught">CgkIudXq-9EFEAIQBQ</string>
 </resources>
