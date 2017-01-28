@@ -6,7 +6,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
 
         coordinatorMainActivity = (CoordinatorLayout) findViewById(R.id.coordinatorMainActivity);
@@ -141,10 +141,9 @@ public class MainActivity extends AppCompatActivity
                         .setAction("CONNECT", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-//                                Toast.makeText(getApplicationContext(), "CLICKED ALSO", Toast.LENGTH_LONG).show();
                                 if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                                     Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
-                                    mGoogleApiClient.connect();
+                                    mGoogleApiClient.clearDefaultAccountAndReconnect();
                                 }
                             }
                         });
@@ -152,7 +151,9 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
@@ -193,15 +194,15 @@ public class MainActivity extends AppCompatActivity
                 .setAction("RETRY", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_LONG).show();
                         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                             Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
-                            mGoogleApiClient.connect();
+                            mGoogleApiClient.clearDefaultAccountAndReconnect();
                         }
                     }
                 });
         snackbar.show();
         System.out.println("Connection error code: " + connectionResult.getErrorCode());
+        Toast.makeText(getApplicationContext(), "Error code: " + connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(getApplicationContext(), "Connection suspended", Toast.LENGTH_LONG).show();
     }
 
 }

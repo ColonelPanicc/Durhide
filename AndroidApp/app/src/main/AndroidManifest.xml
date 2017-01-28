@@ -27,6 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SettingsActivity"
+            android:label="Settings"
+            android:theme="@style/AppTheme">
+
+        </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCcR7UYeQ8K27vAJNiriAI7oOu7t5JLJvk"/>
