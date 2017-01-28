@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'cameras',
+    'webclient',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+TEMPLATE_DIRS = [
+        os.path.join(os.path.dirname(os.path.realpath(__file__)),"../webclient/templates")
 ]
 
 WSGI_APPLICATION = 'durhack.wsgi.application'
