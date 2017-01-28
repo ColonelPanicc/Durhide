@@ -83,9 +83,18 @@ WSGI_APPLICATION = 'durhack.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd2ioi822dv9ff',
+        'USER': 'durhackuser',
+        'PASSWORD': '6e47e4a6ca117e1703c88654e9e641bef352068babc623e657f1ff4787c73a22',
+        'HOST':'ec2-79-125-13-42.eu-west-1.compute.amazonaws.com',
+        'POST':'',
+    },
+    'test': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+
 }
 
 
