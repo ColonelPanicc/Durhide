@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -139,7 +140,9 @@ public class MainActivity extends AppCompatActivity
                         .setAction("CONNECT", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+//                                Toast.makeText(getApplicationContext(), "CLICKED ALSO", Toast.LENGTH_LONG).show();
                                 if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+                                    Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
                                     mGoogleApiClient.connect();
                                 }
                             }
@@ -179,9 +182,6 @@ public class MainActivity extends AppCompatActivity
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ACHIEVEMENTS) {
-
-        }
     }
 
     // Google play games connection methods
@@ -192,7 +192,9 @@ public class MainActivity extends AppCompatActivity
                 .setAction("RETRY", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+//                        Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_LONG).show();
                         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+                            Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
                             mGoogleApiClient.connect();
                         }
                     }
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity
         // Show info(?)
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
 
+        // Run map position initialisation
         ((MapViewFragment)getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
     }
 
