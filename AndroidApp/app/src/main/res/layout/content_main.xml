@@ -11,6 +11,7 @@
 
     <fragment
         class="co.brookesoftware.mike.smilingpooemoji.MapViewFragment"
+        android:id="@+id/map_view_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
