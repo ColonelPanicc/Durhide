@@ -4,16 +4,15 @@ package co.brookesoftware.mike.smilingpooemoji;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.pm.PackageManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +29,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
+import com.google.android.gms.location.LocationServices;
 
 import static co.brookesoftware.mike.smilingpooemoji.R.layout.activity_main;
 
@@ -36,9 +37,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_ACHIEVEMENTS = 1;
+    protected static final int REQUEST_LOCATION_PERMISSION = 50;
+
     CoordinatorLayout coordinatorMainActivity;
 
-    GoogleApiClient mGoogleApiClient;
+    protected static GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +66,29 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        // Check for google play services
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this /* OnConnectionFailedListener */)
-                .addConnectionCallbacks(this)
-                .addApi(Games.API)
-                .addScope(Games.SCOPE_GAMES)
-                .build();
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            this /* OnConnectionFailedListener */)
+                    .addConnectionCallbacks(this)
+                    .addApi(Games.API)
+                    .addScope(Games.SCOPE_GAMES)
+                    .addApi(LocationServices.API)
 
-        mGoogleApiClient.connect();
+                    .build();
+        }
+        if (!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -147,10 +163,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
 
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults){
-        switch(requestCode){
-            case 50:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     FragmentManager fragmentManager = getFragmentManager();
                     Fragment newFragment = new MapViewFragment();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -194,7 +210,7 @@ public class MainActivity extends AppCompatActivity
         Player me = Games.Players.getCurrentPlayer(mGoogleApiClient);
 
         // Load views to modify
-        ImageView userImageView= (ImageView) findViewById(R.id.imgUserIcon);
+        ImageView userImageView = (ImageView) findViewById(R.id.imgUserIcon);
         TextView userNameView = (TextView) findViewById(R.id.lblUserName);
         TextView userInfoView = (TextView) findViewById(R.id.lblUserInfo);
 
@@ -210,7 +226,9 @@ public class MainActivity extends AppCompatActivity
         userNameView.setText(me.getDisplayName());
 
         // Show info(?)
-        userInfoView.setText(me.getTitle());
+        userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
+
+        ((MapViewFragment)getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
     }
 
     @Override
