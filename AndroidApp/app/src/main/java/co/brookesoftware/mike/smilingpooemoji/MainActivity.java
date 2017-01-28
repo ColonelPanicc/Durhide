@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity
                         .setAction("CONNECT", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-//                                Toast.makeText(getApplicationContext(), "CLICKED ALSO", Toast.LENGTH_LONG).show();
                                 if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                                     Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
                                     mGoogleApiClient.connect();
@@ -194,7 +193,6 @@ public class MainActivity extends AppCompatActivity
                 .setAction("RETRY", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_LONG).show();
                         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
                             Toast.makeText(getApplicationContext(), "Attempting to connect...", Toast.LENGTH_LONG).show();
                             mGoogleApiClient.connect();
@@ -240,7 +238,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(getApplicationContext(), "Connection suspended", Toast.LENGTH_LONG).show();
     }
 
 }
