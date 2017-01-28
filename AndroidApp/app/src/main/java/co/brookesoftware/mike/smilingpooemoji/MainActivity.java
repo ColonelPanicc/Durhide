@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity
                 });
         snackbar.show();
         System.out.println("Connection error code: " + connectionResult.getErrorCode());
-        Toast.makeText(getApplicationContext(), connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Error code: " + connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
     }
 
     @Override
