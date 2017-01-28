@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             mgr.loadImage(userImageView, me.getIconImageUri());
         }
-
         // Show username
         userNameView.setText(me.getDisplayName());
 
@@ -229,6 +228,7 @@ public class MainActivity extends AppCompatActivity
 
         // Run map position initialisation
         ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
+
     }
 
     @Override

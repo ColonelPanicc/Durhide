@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +22,14 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class MapViewFragment extends Fragment {
 
@@ -49,7 +61,7 @@ public class MapViewFragment extends Fragment {
                 // For showing a move to my location button
                 if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
-                    ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MainActivity.REQUEST_LOCATION_PERMISSION);
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MainActivity.REQUEST_LOCATION_PERMISSION);
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -60,6 +72,15 @@ public class MapViewFragment extends Fragment {
                 }
                 googleMap.setBuildingsEnabled(false);
                 googleMap.setMyLocationEnabled(true);
+
+                try {
+                    getAllCameras();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -73,12 +94,12 @@ public class MapViewFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
     }
 
@@ -112,9 +133,48 @@ public class MapViewFragment extends Fragment {
             return;
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(MainActivity.mGoogleApiClient);
-        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(16).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
+
+    private void addCamera(double lng, double lat) {
+        Marker camera = googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(lat, lng))
+                .title("Camera!"));
+    }
+
+    private void getAllCameras() throws IOException, JSONException {
+        // read the url
+        String url = "http://durhide.herokuapp.com/api/cameras/camera/";
+        JsonArrayRequest stringRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject camera = response.getJSONObject(i);
+                        double lat = 0;
+                        lat = camera.getDouble("Lat");
+                        double lng = camera.getDouble("Long");
+                        String lnk = camera.getString("ImgLink");
+                        addCamera(lng, lat);
+                        System.out.println(response.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //todo snackbar error for connecting to db
+                System.out.println("Error with retrieving stuff");
+            }
+        }
+        );
+        Volley.newRequestQueue(mMapView.getContext()).add(stringRequest);
+    }
 }
+
