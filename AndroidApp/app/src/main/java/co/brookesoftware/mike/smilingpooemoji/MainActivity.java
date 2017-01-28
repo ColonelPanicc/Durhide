@@ -16,10 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
 
 import static co.brookesoftware.mike.smilingpooemoji.R.layout.activity_main;
 
@@ -119,7 +123,15 @@ public class MainActivity extends AppCompatActivity
                         REQUEST_ACHIEVEMENTS);
             } else {
                 Snackbar snackbar = Snackbar
-                        .make(coordinatorMainActivity, "Google Play Games is not connected", Snackbar.LENGTH_LONG);
+                        .make(coordinatorMainActivity, "Google Play Games is not connected", Snackbar.LENGTH_LONG)
+                        .setAction("CONNECT", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+                                    mGoogleApiClient.connect();
+                                }
+                            }
+                        });
                 snackbar.show();
             }
         } else if (id == R.id.nav_slideshow) {
@@ -149,7 +161,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Snackbar snackbar = Snackbar
-                .make(coordinatorMainActivity, "Failed to connect to Google Play Games", Snackbar.LENGTH_LONG);
+                .make(coordinatorMainActivity, "Failed to connect to Google Play Games", Snackbar.LENGTH_LONG)
+                .setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+                            mGoogleApiClient.connect();
+                        }
+                    }
+                });
         snackbar.show();
         System.out.println("Connection error code: " + connectionResult.getErrorCode());
     }
@@ -160,7 +180,26 @@ public class MainActivity extends AppCompatActivity
             Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_open_durhide));
         }
 
-        // todo load user info and display in nav drawer
+        Player me = Games.Players.getCurrentPlayer(mGoogleApiClient);
+
+        // Load views to modify
+        ImageView userImageView= (ImageView) findViewById(R.id.imgUserIcon);
+        TextView userNameView = (TextView) findViewById(R.id.lblUserName);
+        TextView userInfoView = (TextView) findViewById(R.id.lblUserInfo);
+
+        // Show image
+        ImageManager mgr = ImageManager.create(this);
+        if (me.hasHiResImage()) {
+            mgr.loadImage(userImageView, me.getHiResImageUri());
+        } else {
+            mgr.loadImage(userImageView, me.getIconImageUri());
+        }
+
+        // Show username
+        userNameView.setText(me.getDisplayName());
+
+        // Show info(?)
+        userInfoView.setText(me.getTitle());
     }
 
     @Override
