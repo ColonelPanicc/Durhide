@@ -67,15 +67,12 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */,
                         this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
                 .addApi(Games.API)
                 .addScope(Games.SCOPE_GAMES)
                 .build();
 
         mGoogleApiClient.connect();
-
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            Games.Achievements.unlock(mGoogleApiClient, getString(R.string.ACHIEVE_OPEN_DURHIDE));
-        }
     }
 
     @Override
@@ -116,9 +113,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.btnAchievements) {
             if (mGoogleApiClient.isConnected()) {
                 startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
                         REQUEST_ACHIEVEMENTS);
@@ -161,9 +156,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Snackbar snackbar = Snackbar
-                .make(coordinatorMainActivity, "Connected to Google Play Games", Snackbar.LENGTH_LONG);
-        snackbar.show();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_open_durhide));
+        }
 
         // todo load user info and display in nav drawer
     }
