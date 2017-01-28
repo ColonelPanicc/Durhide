@@ -1,5 +1,10 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
+
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,15 +46,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -150,6 +146,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults){
+        switch(requestCode){
+            case 50:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    FragmentManager fragmentManager = getFragmentManager();
+                    Fragment newFragment = new MapViewFragment();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.map_view_fragment, newFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+        }
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ACHIEVEMENTS) {
@@ -206,4 +217,5 @@ public class MainActivity extends AppCompatActivity
     public void onConnectionSuspended(int i) {
 
     }
+
 }
