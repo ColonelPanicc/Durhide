@@ -8,12 +8,32 @@
 <html>
 	<head>
 		<title>Astral by HTML5 UP</title>
+		<script>	
+function createMap() {
+	var properties = {
+		center:new google.maps.LatLng(78.8986,35.9940),
+		zoom:5,
+	};
+
+	var map = new google.maps.Map(document.getElementById('googlemap'), properties);	
+
+var url = "http://localhost:8000/api/cameras/camera/";
+	$.getJSON(url,function(data) {
+		data.forEach(function(element) {
+			var marker = new google.maps.Marker({
+				position: {lat: element.Lat, lng: element.Long},
+				map: map,
+				title: element.Location,
+			});
+		});
+	});
+}
+		</script>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--[if lte IE 8]><script src="{% static "webclient/js/ie/html5shiv.js" %}"></script><![endif]-->
-		<link rel="stylesheet" href="{% static "webclient/css/main.css" %} />
-		<noscript><link rel="stylesheet" href="{% static "webclient/css/noscript.css" %}" /></noscript>
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<link rel="stylesheet" href="{% static "webclient/css/main.css" %}" />
+
 	</head>
 	<body>
 
@@ -36,7 +56,7 @@
 								<header>
 										<h1>{{pagename}}</h1>
 								</header>
-								<div id="googlemap"></div>								
+								<div id="googlemap" style="width:400px;height:400px;display:table;margin: 0 auto;"></div>								
 						</article>
 
 					
@@ -50,12 +70,13 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="{% static "webclient/js/jquery.min.js" %}"></script>
+			<script src="{% static "webclient/js/jquery.min.js" %}"></script>	
 			<script src="{% static "webclient/js/skel.min.js" %}"></script>
 			<script src="{% static "webclient/js/skel-viewport.min.js" %}"></script>
 			<script src="{% static "webclient/js/util.js" %}"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="{% static "webclient/js/main.js" %}"></script>
-
+			<script src="{% static "webclient/js/main.js" %}"></script>	
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvh6-lIPjw9UNsNUfaj8aZZW0mCBaf8ac&callback=createMap"></script>
+			<script src="{% static "webclient/js/map.js" %}"></script>
 	</body>
 </html>
