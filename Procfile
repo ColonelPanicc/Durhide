@@ -1,1 +1,1 @@
-web: gunicorn backend/durhack.wsgi --log-file -
+web: gunicorn durhack.wsgi --log-file -
