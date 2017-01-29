@@ -1,12 +1,12 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.preference_key_dark_theme), true)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
         super.onCreate(savedInstanceState);
         setContentView(activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -143,16 +146,26 @@ public class MainActivity extends AppCompatActivity
                         });
                 snackbar.show();
             }
-        } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_settings) {
+            if (MainActivity.mGoogleApiClient != null && MainActivity.mGoogleApiClient.isConnected()) {
+                Games.Achievements.unlock(MainActivity.mGoogleApiClient, getString(R.string.achievement_change_a_setting));
+            }
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            try {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                String sAux = "\nHave you played DurHide yet? It's awesome!\n\n";
+                sAux = sAux + "https://play.google.com/store/apps/details?id=co.brookesoftware.mike.smilingpooemoji\n\n";
+                i.putExtra(Intent.EXTRA_TEXT, sAux);
+                startActivity(Intent.createChooser(i, "Share to..."));
+            } catch(Exception e) {
+                //e.toString();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -225,8 +238,11 @@ public class MainActivity extends AppCompatActivity
         // Show info(?)
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
 
-        // Run map position initialisation
-        ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
+        MapViewFragment mVF = (MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment);
+        if (mVF != null) {
+            // Run map position initialisation
+            mVF.onConnected();
+        }
     }
 
     @Override

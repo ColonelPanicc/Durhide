@@ -1,8 +1,0 @@
-TODO LIST:
-
-+ Geofencing
-+ Settings being useful (dark theme)
-
-
-Very low priority
-+ Safety mode (turn off things) - passive mode

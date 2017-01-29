@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="first_preferencescreen">
+    android:key="pref_main">
     <SwitchPreference
         android:defaultValue="true"
-        android:title="Allow Background Running"></SwitchPreference>
-    <SwitchPreference
-        android:defaultValue="false"
-        android:title="Dark Theme"></SwitchPreference>
-    <SwitchPreference
-        android:defaultValue="true"
+        android:key="@string/preference_key_show_cones"
         android:title="Show cones of vision"></SwitchPreference>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:title="Allow Background Running"
+        android:summary="NOT YET IMPLEMENTED"></SwitchPreference>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/preference_key_dark_theme"
+        android:title="Dark Theme"
+        android:summary="Changes will take effect after restarting the app!"></SwitchPreference>
 </PreferenceScreen>

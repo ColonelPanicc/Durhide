@@ -9,12 +9,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Parcelable;
+
+import android.preference.PreferenceManager;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,6 +43,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.json.JSONArray;
@@ -49,7 +52,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,12 +69,17 @@ public class MapViewFragment extends Fragment {
     private GoogleMap googleMap;
     private Map<Marker, Bitmap> imagesToDisplay;
 
-    private RequestQueue requestQueue;
+    private List<Polygon> polygons;
 
+    private RequestQueue requestQueue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_dark_theme), true)) {
+            getActivity().setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
         imagesToDisplay = new HashMap<Marker, Bitmap>();
+        polygons = new ArrayList<>();
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         System.out.println("inflating");
 
@@ -105,6 +115,9 @@ public class MapViewFragment extends Fragment {
                 googleMap.getUiSettings().setMapToolbarEnabled(false);
                 googleMap.setBuildingsEnabled(false);
                 googleMap.setMyLocationEnabled(true);
+                googleMap.setMinZoomPreference(13);
+                googleMap.getUiSettings().setRotateGesturesEnabled(false);
+                googleMap.getUiSettings().setTiltGesturesEnabled(false);
 
                 CameraPosition camPos = new CameraPosition.Builder().target(new LatLng(54.7817499,-1.5872562)).zoom(15).build();
                 googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
@@ -126,6 +139,10 @@ public class MapViewFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        boolean showState = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("pref_showCones",true);
+        for(Polygon p : polygons){
+            p.setVisible(showState);
+        }
     }
 
     @Override
@@ -282,6 +299,11 @@ public class MapViewFragment extends Fragment {
     }
 
     private void showMyDialog(Context context, Bitmap bmp) {
+        // showing camera view, ACHIEVE
+        if (MainActivity.mGoogleApiClient != null && MainActivity.mGoogleApiClient.isConnected()) {
+            Games.Achievements.unlock(MainActivity.mGoogleApiClient, getString(R.string.achievement_check_camera_vision));
+        }
+
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.image_dialog, null);
         dialogBuilder.setView(dialogView);
@@ -323,10 +345,12 @@ public class MapViewFragment extends Fragment {
     }
 
     private void addPolygon(List<LatLng> vertices) {
-        googleMap.addPolygon(new PolygonOptions()
+        Polygon poly = googleMap.addPolygon(new PolygonOptions()
                 .addAll(vertices)
                 .strokeColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_border))))
-                .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill)))));
+                .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill))))
+                .visible(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_show_cones),true)));
+        polygons.add(poly);
     }
 
 }
