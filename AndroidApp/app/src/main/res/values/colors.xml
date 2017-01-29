@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="polygon_border">#FFFF0000</color>
-    <color name="polygon_fill">#88FF0000</color>
+    <color name="polygon_fill">#7FFF0000</color>
 </resources>
