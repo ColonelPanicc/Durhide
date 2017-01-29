@@ -175,11 +175,9 @@ public class MapViewFragment extends Fragment {
                     .position(new LatLng(lat, lng))
                     .title("Camera!")
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+            // todo on click, call showMyDialog(context, bitmap) to show big version
+
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
 
@@ -221,7 +219,7 @@ public class MapViewFragment extends Fragment {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // not showing camera names/IDs
         dialog.setContentView(R.layout.image_dialog);
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
         ImageView imageView = (ImageView) dialog.findViewById(R.id.imgBigCameraView);
