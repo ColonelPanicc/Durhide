@@ -3,7 +3,6 @@ package co.brookesoftware.mike.smilingpooemoji;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,9 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-
 import android.preference.PreferenceManager;
-
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -51,17 +48,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
-
-import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.addAll;
-import static java.util.Collections.sort;
 
 public class MapViewFragment extends Fragment {
 
