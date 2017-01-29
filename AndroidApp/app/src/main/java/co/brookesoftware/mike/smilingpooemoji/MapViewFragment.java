@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +45,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.addAll;
 
 public class MapViewFragment extends Fragment {
 
@@ -162,13 +169,26 @@ public class MapViewFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void addCamera(final double lng, final double lat, String url) {
+    private void addCamera(final double lng, final double lat, String url, final double lat1, final double lng1,
+                           final double lat2, final double lng2) {
         // Build request
         ImageRequest request = new ImageRequest(url,
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {
                         // use bitmap
+
+                        //todo make this actually decent code
+                        LatLng p1 = new LatLng(lat, lng);
+                        LatLng p2 = new LatLng(lat1, lng1);
+                        LatLng p3 = new LatLng(lat2, lng2);
+                        ArrayList<LatLng> pointList = new ArrayList<>();
+                        pointList.add(p1);
+                        pointList.add(p2);
+                        pointList.add(p3);
+
+                        addPolygon(pointList);
+
                         Marker marker = googleMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(lat, lng))
                                 .title("Camera!")
@@ -220,8 +240,15 @@ public class MapViewFragment extends Fragment {
                                 lat = camera.getDouble("Lat");
                                 double lng = camera.getDouble("Long");
                                 String lnk = camera.getString("ImgLink");
-                                addCamera(lng, lat, lnk);
-//                                System.out.println(response.toString());
+
+                                // now deal with the second points
+                                double lat1 = camera.getDouble("LatRange1");
+                                double lng1 = camera.getDouble("LongRange1");
+
+                                double lat2 = camera.getDouble("LatRange2");
+                                double lng2 = camera.getDouble("LongRange2");
+
+                                addCamera(lng, lat, lnk, lat1, lng1, lat2, lng2);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -279,8 +306,8 @@ public class MapViewFragment extends Fragment {
     private void addPolygon(List<LatLng> vertices) {
         googleMap.addPolygon(new PolygonOptions()
                 .addAll(vertices)
-                .strokeColor(R.color.polygon_border)
-                .fillColor(R.color.polygon_fill));
+                .strokeColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_border))))
+                .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill)))));
     }
 
 }
