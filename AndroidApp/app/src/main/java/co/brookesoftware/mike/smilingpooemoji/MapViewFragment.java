@@ -101,6 +101,9 @@ public class MapViewFragment extends Fragment {
                 googleMap.setBuildingsEnabled(false);
                 googleMap.setMyLocationEnabled(true);
 
+                CameraPosition camPos = new CameraPosition.Builder().target(new LatLng(54.7817499,-1.5872562)).zoom(15).build();
+                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
                 try {
                     getAllCameras();
                 } catch (IOException | JSONException e) {
