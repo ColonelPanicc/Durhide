@@ -12,8 +12,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioAttributes;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.NotificationCompat;
@@ -91,7 +93,9 @@ public class IntersectionService extends Service {
 //                        mNotifyMgr.notify(1,mBuilder.build());
 //                        System.out.println("In Range!");
                         System.out.println("Yes");
-                        Toast.makeText(getApplicationContext(), "In the area!", Toast.LENGTH_LONG).show();
+                        Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        mVibrator.vibrate(300);
+                        Toast.makeText(getApplicationContext(), "You are on camera!", Toast.LENGTH_LONG).show();
                     } else {
                         System.out.println("No");
                     }

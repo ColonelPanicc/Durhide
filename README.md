@@ -1,39 +1,23 @@
-# Durhack
-Our Durhack Project
+# Durhide
+Durhide is an app combining government traffic camera data with a visual map, to show the locations of these cameras, live feeds, and notifications when you are passing them. Think of this as an app both for governments and those who fear 'Big Brother' (not the TV show, although that's equally as scary).
 
-## Goals:
-+ Android App
-+ Some backend to integrate (through REST api)
+## Backend
+The Backend API is deployed on Heroku, running Django. The Django site requires PostgreSQL. Unless you want to host your own service, this shouldn't concern you.
 
-Using CCTV Camera data, and make a game.
+## Android App
 
-### Mechanics:
-	+ Avoid cameras
-	+ Use GPS to get location
-	+ Google Play Games (with achievements)
-	+ Longest distances (how long can you survive?)
+The Android app supports Android 19, although we recommend Android 25 (Nougat), as that's what we have been testing with.
+The APK must be signed to allow for Google Play Services to work correctly.
 
-## Backend (Local Development)
-Django based backend. Navigate to the backend folder, and activate the virtual environment using:
+The app shall be available on the Play Store shortly.
 
-```bash
-source venv/bin/activate
-```
-This works on Ubuntu.
+# Data
+The data used for this project can be found at [Data Mill North](https://datamillnorth.org/dataset/traffic-web-cameras).
 
-Then navigate to the durhack folder, and you can start the server using:
+# Screenshots
+![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/Screenshot1.png "Cameras viewed on the map" width=100)
+![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/Screenshot2.png "Viewing images from cameras" width=100)
+![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/Screenshot3.png "Camera range is shown" width=100)
 
-```bash
-python3 manage.py runserver
-```
 
-Username: admin
-Password: longpassword
-
-### Subdirectories:
-#### Cameras
-This creates the model for each camera and registers it in the backend
-#### UserSettings
-This adds the user settings to the database
-
-	+ Larger number of cameras with different levels
+![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/banner.png "Banner")
