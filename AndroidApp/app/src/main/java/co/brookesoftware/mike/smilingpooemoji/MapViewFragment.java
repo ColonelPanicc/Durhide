@@ -182,7 +182,9 @@ public class MapViewFragment extends Fragment {
 
             Marker camera = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lng))
-                    .title("Camera!"));
+                    .title("Camera!")
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker))
+            );
 
             imagesToDisplay.put(camera, bitmap);
             GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
