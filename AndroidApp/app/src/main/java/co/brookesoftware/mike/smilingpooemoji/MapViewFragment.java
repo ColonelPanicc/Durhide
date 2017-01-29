@@ -69,6 +69,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         if (PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_dark_theme), true)) {
             getActivity().setTheme(R.style.AppTheme_Dark_NoActionBar);
         }
+        // todo load pics here and just feed them in later
         imagesToDisplay = new HashMap<Marker, Bitmap>();
         polygons = new ArrayList<>();
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);

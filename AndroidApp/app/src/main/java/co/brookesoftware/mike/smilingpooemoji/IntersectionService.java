@@ -1,14 +1,18 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,8 +24,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.games.Games;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -92,13 +102,34 @@ public class IntersectionService extends Service {
 //                        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 //                        mNotifyMgr.notify(1,mBuilder.build());
 //                        System.out.println("In Range!");
-                        System.out.println("Yes");
+                        System.out.println("IN AREA");
+
+                        if (MainActivity.mGoogleApiClient != null && MainActivity.mGoogleApiClient.isConnected()) {
+                            Games.Achievements.unlock(MainActivity.mGoogleApiClient, getString(R.string.achievement_get_caught));
+                        }
                         Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                         mVibrator.vibrate(300);
                         Toast.makeText(getApplicationContext(), "You are on camera!", Toast.LENGTH_LONG).show();
-                    } else {
-                        System.out.println("No");
+
+//                        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getApplicationContext());
+//                        View dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.image_dialog, TODO, false);
+//                        dialogBuilder.setView(dialogView);
+//                        dialogBuilder.setCancelable(true);
+//                        dialogBuilder.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//
+//                        ImageView imageView = (ImageView) dialogView.findViewById(R.id.imgBigCameraView);
+//                        imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_death));
+//
+//                        AlertDialog alertDialog = dialogBuilder.create();
+//                        alertDialog.show();
                     }
+//                     else {
+////                        System.out.println("No");
+//                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -154,7 +185,6 @@ public class IntersectionService extends Service {
         }
 
     }
-
 
 
     private void initializeLocationManager() {
