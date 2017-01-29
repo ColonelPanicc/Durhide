@@ -3,16 +3,22 @@ package co.brookesoftware.mike.smilingpooemoji;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,16 +26,23 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MapViewFragment extends Fragment {
 
@@ -38,6 +51,7 @@ public class MapViewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         System.out.println("inflating");
 
@@ -139,10 +153,25 @@ public class MapViewFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void addCamera(double lng, double lat) {
-        Marker camera = googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(lat, lng))
-                .title("Camera!"));
+    private void addCamera(double lng, double lat, String url) {
+        Future<Bitmap> image = Ion.with(this).load(url).withBitmap().asBitmap();
+
+        try {
+            Bitmap bitmap = image.get(10, TimeUnit.SECONDS);
+
+            Marker camera = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .title("Camera!")
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void getAllCameras() throws IOException, JSONException {
@@ -158,7 +187,7 @@ public class MapViewFragment extends Fragment {
                         lat = camera.getDouble("Lat");
                         double lng = camera.getDouble("Long");
                         String lnk = camera.getString("ImgLink");
-                        addCamera(lng, lat);
+                        addCamera(lng, lat, lnk);
                         System.out.println(response.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
