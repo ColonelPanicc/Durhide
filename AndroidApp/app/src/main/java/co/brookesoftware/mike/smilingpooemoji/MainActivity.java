@@ -1,6 +1,5 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity
                 sAux = sAux + "https://play.google.com/store/apps/details?id=co.brookesoftware.mike.smilingpooemoji\n\n";
                 i.putExtra(Intent.EXTRA_TEXT, sAux);
                 startActivity(Intent.createChooser(i, "Share to..."));
-            } catch (Exception e) {
+            } catch(Exception e) {
                 //e.toString();
             }
         }

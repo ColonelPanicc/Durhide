@@ -6,6 +6,7 @@ app_id and app_name are in strings.xml
 <resources>
     <string name="achievement_open_durhide">CgkIudXq-9EFEAIQAQ</string>
     <string name="achievement_check_achievements">CgkIudXq-9EFEAIQAw</string>
+    <string name="achievement_change_a_setting">CgkIudXq-9EFEAIQBg</string>
     <string name="achievement_check_camera_vision">CgkIudXq-9EFEAIQBA</string>
     <string name="achievement_get_caught">CgkIudXq-9EFEAIQBQ</string>
 </resources>
