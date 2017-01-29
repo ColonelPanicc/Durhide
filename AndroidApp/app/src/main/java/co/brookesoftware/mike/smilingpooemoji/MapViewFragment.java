@@ -179,10 +179,21 @@ public class MapViewFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void addCamera(double lng, double lat, String url) {
+    private void addCamera(double lng, double lat, String url, double lat1, double lng1, double lat2, double lng2) {
         Future<Bitmap> image = Ion.with(this).load(url).withBitmap().asBitmap();
 
         try {
+
+            //todo make this actually decent code
+            LatLng p1 = new LatLng(lat,lng);
+            LatLng p2 = new LatLng(lat1,lng1);
+            LatLng p3 = new LatLng(lat2,lng2);
+            ArrayList<LatLng> pointList = new ArrayList<>();
+            pointList.add(p1);
+            pointList.add(p2);
+            pointList.add(p3);
+
+
             Bitmap bitmap = image.get(10, TimeUnit.SECONDS);
 
             Marker camera = googleMap.addMarker(new MarkerOptions()
@@ -202,6 +213,7 @@ public class MapViewFragment extends Fragment {
                 }
             };
 
+            ;
             googleMap.setOnMarkerClickListener(listener);
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
@@ -222,7 +234,16 @@ public class MapViewFragment extends Fragment {
                         lat = camera.getDouble("Lat");
                         double lng = camera.getDouble("Long");
                         String lnk = camera.getString("ImgLink");
-                        addCamera(lng, lat, lnk);
+
+
+                        // now deal with the second points
+                        double lat1 = camera.getDouble("LatRange1");
+                        double lng1 = camera.getDouble("LongRange1");
+
+                        double lat2 = camera.getDouble("LatRange2");
+                        double lng2 = camera.getDouble("LongRange2");
+
+                        addCamera(lng, lat, lnk, lat1, lng1,lat2,lng2);
                         System.out.println(response.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
