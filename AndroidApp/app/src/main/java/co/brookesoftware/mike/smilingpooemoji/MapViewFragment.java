@@ -236,15 +236,14 @@ public class MapViewFragment extends Fragment {
 
     private void showMyDialog(Context context, Bitmap bmp) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.image_dialog, null);
+        dialogBuilder.setView(dialogView);
         dialogBuilder.setCancelable(true);
         dialogBuilder.setNeutralButton("Close", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.image_dialog, null);
-        dialogBuilder.setView(dialogView);
 
         ImageView imageView = (ImageView) dialogView.findViewById(R.id.imgBigCameraView);
         imageView.setImageBitmap(bmp);
