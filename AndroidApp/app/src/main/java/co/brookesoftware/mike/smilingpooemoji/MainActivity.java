@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -149,6 +148,9 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.nav_settings) {
+            if (MainActivity.mGoogleApiClient != null && MainActivity.mGoogleApiClient.isConnected()) {
+                Games.Achievements.unlock(MainActivity.mGoogleApiClient, getString(R.string.achievement_change_a_setting));
+            }
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
 
@@ -236,8 +238,11 @@ public class MainActivity extends AppCompatActivity
         // Show info(?)
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
 
-        // Run map position initialisation
-        ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
+        MapViewFragment mVF = (MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment);
+        if (mVF != null) {
+            // Run map position initialisation
+            mVF.onConnected();
+        }
     }
 
     @Override
