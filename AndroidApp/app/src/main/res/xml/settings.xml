@@ -5,4 +5,10 @@
     <SwitchPreference
         android:defaultValue="true"
         android:title="Allow Background Running"></SwitchPreference>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:title="Dark Theme"></SwitchPreference>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:title="Show cones of vision"></SwitchPreference>
 </PreferenceScreen>
