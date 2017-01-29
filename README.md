@@ -14,6 +14,6 @@ The app shall be available on the Play Store shortly.
 # Data
 The data used for this project can be found at [Data Mill North](https://datamillnorth.org/dataset/traffic-web-cameras).
 
-# Screenshots
+# Art, featuring Tom Lafferty
 
 ![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/banner.png "Banner")
