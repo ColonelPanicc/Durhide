@@ -105,6 +105,7 @@ public class MapViewFragment extends Fragment {
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
+                googleMap.getUiSettings().setMapToolbarEnabled(false);
                 googleMap.setBuildingsEnabled(false);
                 googleMap.setMyLocationEnabled(true);
 
