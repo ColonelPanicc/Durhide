@@ -80,9 +80,23 @@ WSGI_APPLICATION = 'durhack.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-DATABASES['default'] = dj_database_url.config()
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd2ioi822dv9ff',
+        'USER': 'durhackuser',
+        'PASSWORD': '6e47e4a6ca117e1703c88654e9e641bef352068babc623e657f1ff4787c73a22',
+        'HOST':'ec2-79-125-13-42.eu-west-1.compute.amazonaws.com',
+        'POST':'',
+    },
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
