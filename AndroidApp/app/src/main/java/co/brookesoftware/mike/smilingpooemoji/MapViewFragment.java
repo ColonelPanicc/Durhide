@@ -2,41 +2,27 @@ package co.brookesoftware.mike.smilingpooemoji;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-
-import android.graphics.BitmapFactory;
-
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.ImageView;
-
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,27 +36,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MapViewFragment extends Fragment {
 
     private MapView mMapView;
     private GoogleMap googleMap;
     private Map<Marker, Bitmap> imagesToDisplay;
+
+    private RequestQueue requestQueue;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -133,6 +116,9 @@ public class MapViewFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this.getActivity());
+        }
     }
 
     @Override
@@ -176,66 +162,85 @@ public class MapViewFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void addCamera(double lng, double lat, String url) {
-        Future<Bitmap> image = Ion.with(this).load(url).withBitmap().asBitmap();
+    private void addCamera(final double lng, final double lat, String url) {
+        // Build request
+        ImageRequest request = new ImageRequest(url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap bitmap) {
+                        // use bitmap
+                        Marker marker = googleMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(lat, lng))
+                                .title("Camera!")
+                                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker))
+                        );
 
-        try {
-            Bitmap bitmap = image.get(10, TimeUnit.SECONDS);
+                        imagesToDisplay.put(marker, bitmap);
+                        GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                                Bitmap image = imagesToDisplay.get(marker);
+                                showMyDialog(mMapView.getContext(), image);
+                                return false;
+                            }
+                        };
 
-            Marker camera = googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(lat, lng))
-                    .title("Camera!")
-                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker))
-            );
-
-            imagesToDisplay.put(camera, bitmap);
-            GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
-
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Bitmap image = imagesToDisplay.get(marker);
-                    showMyDialog(mMapView.getContext(), image);
-                    return false;
-                }
-            };
-
-            googleMap.setOnMarkerClickListener(listener);
-
-        } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            e.printStackTrace();
+                        googleMap.setOnMarkerClickListener(listener);
+                    }
+                }, 0, 0, null, null,
+                new Response.ErrorListener() {
+                    public void onErrorResponse(VolleyError error) {
+                        displayVolleyError(error, "addCamera");
+                    }
+                });
+        // Ensure we have a queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this.getActivity());
         }
+        // Carry out request ASYNC
+        requestQueue.add(request);
+    }
+
+    private void displayVolleyError(VolleyError error, String whileLoading) {
+        Toast.makeText(this.getActivity(), "Error in " + whileLoading + ": " + error.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     private void getAllCameras() throws IOException, JSONException {
         // read the url
         String url = "http://durhide.herokuapp.com/api/cameras/camera/";
-        JsonArrayRequest stringRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject camera = response.getJSONObject(i);
-                        double lat = 0;
-                        lat = camera.getDouble("Lat");
-                        double lng = camera.getDouble("Long");
-                        String lnk = camera.getString("ImgLink");
-                        addCamera(lng, lat, lnk);
-                        System.out.println(response.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        // Build request
+        JsonArrayRequest stringRequest = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject camera = response.getJSONObject(i);
+                                double lat = 0;
+                                lat = camera.getDouble("Lat");
+                                double lng = camera.getDouble("Long");
+                                String lnk = camera.getString("ImgLink");
+                                addCamera(lng, lat, lnk);
+//                                System.out.println(response.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        displayVolleyError(error, "getALlCameras");
                     }
                 }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //todo snackbar error for connecting to db
-                System.out.println("Error with retrieving stuff");
-            }
-        }
         );
-        Volley.newRequestQueue(mMapView.getContext()).add(stringRequest);
+        // Ensure we have a queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this.getActivity());
+        }
+        // Carry out request ASYNC
+        requestQueue.add(stringRequest);
     }
 
     private void showMyDialog(Context context, Bitmap bmp) {
@@ -271,11 +276,11 @@ public class MapViewFragment extends Fragment {
         return infoView;
     }
 
-    private void addPolygon(List<LatLng> vertices){
+    private void addPolygon(List<LatLng> vertices) {
         googleMap.addPolygon(new PolygonOptions()
-        .addAll(vertices)
-        .strokeColor(R.color.polygon_border)
-        .fillColor(R.color.polygon_fill));
+                .addAll(vertices)
+                .strokeColor(R.color.polygon_border)
+                .fillColor(R.color.polygon_fill));
     }
 
 }

@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity
         userInfoView.setText("Level " + me.getLevelInfo().getCurrentLevel().getLevelNumber() + " " + me.getTitle());
 
         // Run map position initialisation
-         ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
+        ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
     }
 
     @Override
