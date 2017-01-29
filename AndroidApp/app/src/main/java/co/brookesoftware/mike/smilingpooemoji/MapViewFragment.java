@@ -1,18 +1,31 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
 import android.graphics.BitmapFactory;
+
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.ImageView;
+
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -89,9 +102,8 @@ public class MapViewFragment extends Fragment {
 
                 try {
                     getAllCameras();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (IOException | JSONException e) {
+                    // todo tell user? sort of makes app unusable...
                     e.printStackTrace();
                 }
 
@@ -171,7 +183,6 @@ public class MapViewFragment extends Fragment {
             e.printStackTrace();
         }
 
-
     }
 
     private void getAllCameras() throws IOException, JSONException {
@@ -205,5 +216,24 @@ public class MapViewFragment extends Fragment {
         );
         Volley.newRequestQueue(mMapView.getContext()).add(stringRequest);
     }
+
+    private void showMyDialog(Context context, Bitmap bmp) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // not showing camera names/IDs
+        dialog.setContentView(R.layout.image_dialog);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.imgBigCameraView);
+        imageView.setImageBitmap(bmp);
+
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int dialogWidth = (int)(displayMetrics.widthPixels * 0.85);
+        int dialogHeight = (int)(displayMetrics.heightPixels * 0.85);
+        dialog.getWindow().setLayout(dialogWidth, dialogHeight);
+
+        dialog.show();
+    }
+
 }
 
