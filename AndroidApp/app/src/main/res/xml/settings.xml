@@ -6,9 +6,12 @@
         android:defaultValue="true"
         android:key="@string/preference_key_show_cones"
         android:title="Show cones of vision"></SwitchPreference>
+
     <SwitchPreference
         android:defaultValue="true"
-        android:title="Allow Background Running"></SwitchPreference>
+        android:title="Allow Background Running"
+        android:summary="NOT YET IMPLEMENTED"></SwitchPreference>
+
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/preference_key_dark_theme"

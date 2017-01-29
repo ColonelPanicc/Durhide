@@ -7,10 +7,6 @@ import android.preference.SwitchPreference;
 
 import com.google.android.gms.games.Games;
 
-/**
- * Created by olivermcleod on 28/01/2017.
- */
-
 public class SettingsFragment extends PreferenceFragment {
 
     @Override

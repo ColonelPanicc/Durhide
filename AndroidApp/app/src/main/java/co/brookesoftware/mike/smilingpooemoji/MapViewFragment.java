@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -28,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,13 +47,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.addAll;
 
 public class MapViewFragment extends Fragment {
 
@@ -290,6 +287,11 @@ public class MapViewFragment extends Fragment {
     }
 
     private void showMyDialog(Context context, Bitmap bmp) {
+        // showing camera view, ACHIEVE
+        if (MainActivity.mGoogleApiClient != null && MainActivity.mGoogleApiClient.isConnected()) {
+            Games.Achievements.unlock(MainActivity.mGoogleApiClient, getString(R.string.achievement_check_camera_vision));
+        }
+
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.image_dialog, null);
         dialogBuilder.setView(dialogView);

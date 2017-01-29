@@ -1,7 +1,7 @@
 TODO LIST:
 
 + Geofencing
-+ Settings being useful (dark theme)
++ Settings being useful (background worker)
 + Initialise map over England
 
 Very low priority

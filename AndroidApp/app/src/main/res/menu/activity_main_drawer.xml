@@ -7,10 +7,7 @@
             android:id="@+id/btnAchievements"
             android:icon="@mipmap/ic_achieve"
             android:title="@string/nav_menu_title_achievements" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_manage"
@@ -23,10 +20,6 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
         </menu>
     </item>
 
