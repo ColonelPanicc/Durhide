@@ -106,6 +106,8 @@ public class MapViewFragment extends Fragment {
                 googleMap.setBuildingsEnabled(false);
                 googleMap.setMyLocationEnabled(true);
                 googleMap.setMinZoomPreference(13);
+                googleMap.getUiSettings().setRotateGesturesEnabled(false);
+                googleMap.getUiSettings().setTiltGesturesEnabled(false);
 
                 CameraPosition camPos = new CameraPosition.Builder().target(new LatLng(54.7817499,-1.5872562)).zoom(15).build();
                 googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
