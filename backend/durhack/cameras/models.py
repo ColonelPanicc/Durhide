@@ -13,7 +13,7 @@ class Camera(models.Model):
     LatRange1 = models.FloatField()
     LongRange1 = models.FloatField()
     LatRange2 = models.FloatField()
-    LongRange2 = model.FloatField()
+    LongRange2 = models.FloatField()
 
     def __str__(self):
         return self.Location
