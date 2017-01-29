@@ -1,11 +1,11 @@
 Traffic Camera 1 -> Camera(54.7844462049, -1.58642667989), Point 1(54.7824462049, -1.58522667989), Point2(54.7826462049, -1.58322667989) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera01.jpg
-Traffic Camera 2 -> Camera(54.7781492381, -1.57933939913), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera02.jpg
-Traffic Camera 3 -> Camera(54.7803333174, -1.56165473918), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera03.jpg
-Missing Traffic Camera -> Camera(54.768625, -1.575122), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera04.jpg
-Traffic Camera 4 -> Camera(54.7750597238, -1.57215831355), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera05.jpg
-Traffic Camera 5 -> Camera(54.7771074851, -1.58476031365), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera06.jpg
-Traffic Camera 6 -> Camera(54.7791782716, -1.55540173632), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera07.jpg
-Traffic Camera 7 -> Camera(54.7939184156, -1.53206646417), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera08.jpg
+Traffic Camera 2 -> Camera(54.7781492381, -1.57933939913), Point 1(54.7782492381, -1.57653939913), Point2(54.7772492381, -1.57653939913) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera02.jpg
+Traffic Camera 3 -> Camera(54.7803333174, -1.56165473918), Point 1(54.7794333174, -1.56415473918), Point2(54.7789333174, -1.56365473918) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera03.jpg
+Missing Traffic Camera -> Camera(54.768625, -1.575122), Point 1(54.768325, -1.573622), Point2(54.768925, -1.571122) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera04.jpg
+Traffic Camera 4 -> Camera(54.7750597238, -1.57215831355), Point 1(54.7730597238, -1.57135831355), Point2(54.7730597238, -1.57055831355) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera05.jpg
+Traffic Camera 5 -> Camera(54.7771074851, -1.58476031365), Point 1(54.7783974851, -1.58316031365), Point2(54.7775074851, -1.58356031365) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera06.jpg
+Traffic Camera 6 -> Camera(54.7791782716, -1.55540173632), Point 1(54.7788782716, -1.55580173632), Point2(54.7789782716, -1.55780173632) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera07.jpg
+Traffic Camera 7 -> Camera(54.7939184156, -1.53206646417), Point 1(54.7914184156, -1.53806646417), Point2(54.7929184156, -1.53806646417) -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera08.jpg
 Traffic Camera 8 -> Camera(54.7771781587, -1.57403262404), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera09.jpg
 Traffic Camera 9 -> Camera(54.7710018768, -1.59428906476), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera10.jpg
 Traffic Camera 10 -> Camera(54.7750276962, -1.59693817813), Point 1(), Point2() -> https://live.streamdays.com/bespoke-hosting/durhamcouncil/camera11.jpg
