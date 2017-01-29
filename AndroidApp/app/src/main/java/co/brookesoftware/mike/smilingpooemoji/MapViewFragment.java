@@ -271,8 +271,8 @@ public class MapViewFragment extends Fragment {
         return infoView;
     }
 
-    private void addPolygon(GoogleMap gMap, List<LatLng> vertices){
-        gMap.addPolygon(new PolygonOptions()
+    private void addPolygon(List<LatLng> vertices){
+        googleMap.addPolygon(new PolygonOptions()
         .addAll(vertices)
         .strokeColor(R.color.polygon_border)
         .fillColor(R.color.polygon_fill));
