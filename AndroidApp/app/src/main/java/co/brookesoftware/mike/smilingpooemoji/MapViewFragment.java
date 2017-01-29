@@ -12,11 +12,13 @@ import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +60,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -274,8 +277,8 @@ public class MapViewFragment extends Fragment {
     private void addPolygon(List<LatLng> vertices){
         googleMap.addPolygon(new PolygonOptions()
         .addAll(vertices)
-        .strokeColor(R.color.polygon_border)
-        .fillColor(R.color.polygon_fill));
+        .strokeColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(),R.color.polygon_border))))
+        .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(),R.color.polygon_fill)))));
     }
 
 }
