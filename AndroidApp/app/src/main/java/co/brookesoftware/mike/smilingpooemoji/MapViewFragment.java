@@ -191,6 +191,7 @@ public class MapViewFragment extends Fragment {
             pointList.add(p2);
             pointList.add(p3);
 
+            addPolygon(pointList);
 
             Bitmap bitmap = image.get(10, TimeUnit.SECONDS);
 
