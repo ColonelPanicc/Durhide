@@ -16,5 +16,5 @@
         android:defaultValue="true"
         android:key="@string/preference_key_dark_theme"
         android:title="Dark Theme"
-        android:summary="Changes will take effect after restarting the app!"></SwitchPreference>
+        android:summary="Changes may require app restart to update!"></SwitchPreference>
 </PreferenceScreen>
