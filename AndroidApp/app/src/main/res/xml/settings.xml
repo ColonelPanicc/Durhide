@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
-
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="first_preferencescreen">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:title="Allow Background Running"></SwitchPreference>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:title="Dark Theme"></SwitchPreference>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:title="Show cones of vision"></SwitchPreference>
 </PreferenceScreen>
