@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
@@ -58,6 +59,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -267,6 +269,13 @@ public class MapViewFragment extends Fragment {
         infoImageView.setImageDrawable(drawable);
         infoView.addView(infoImageView);
         return infoView;
+    }
+
+    private void addPolygon(GoogleMap gMap, List<LatLng> vertices){
+        gMap.addPolygon(new PolygonOptions()
+        .addAll(vertices)
+        .strokeColor(R.color.polygon_border)
+        .fillColor(R.color.polygon_fill));
     }
 
 }
