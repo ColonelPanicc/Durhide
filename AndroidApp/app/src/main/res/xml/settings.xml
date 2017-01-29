@@ -4,12 +4,14 @@
     android:key="pref_main">
     <SwitchPreference
         android:defaultValue="true"
-        android:title="Allow Background Running"></SwitchPreference>
-    <SwitchPreference
-        android:defaultValue="false"
-        android:title="Dark Theme"></SwitchPreference>
+        android:key="@string/preference_key_show_cones"
+        android:title="Show cones of vision"></SwitchPreference>
     <SwitchPreference
         android:defaultValue="true"
-        android:key="pref_showCones"
-        android:title="Show cones of vision"></SwitchPreference>
+        android:title="Allow Background Running"></SwitchPreference>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/preference_key_dark_theme"
+        android:title="Dark Theme"
+        android:summary="Changes will take effect after restarting the app!"></SwitchPreference>
 </PreferenceScreen>

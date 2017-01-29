@@ -68,6 +68,9 @@ public class MapViewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_dark_theme), true)) {
+            getActivity().setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
         imagesToDisplay = new HashMap<Marker, Bitmap>();
         polygons = new ArrayList<>();
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
@@ -322,7 +325,7 @@ public class MapViewFragment extends Fragment {
                 .addAll(vertices)
                 .strokeColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_border))))
                 .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill))))
-                .visible(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("pref_showCones",true)));
+                .visible(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_show_cones),true)));
         polygons.add(poly);
     }
 
