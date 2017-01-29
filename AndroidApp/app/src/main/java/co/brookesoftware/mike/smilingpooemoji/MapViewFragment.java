@@ -62,7 +62,6 @@ public class MapViewFragment extends Fragment {
 
     private RequestQueue requestQueue;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_dark_theme), true)) {

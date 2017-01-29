@@ -25,7 +25,7 @@ public class SettingsFragment extends PreferenceFragment {
                 if(MainActivity.mGoogleApiClient != null && MainActivity.mGoogleApiClient.isConnected()){
                     Games.Achievements.unlock(MainActivity.mGoogleApiClient,getString(R.string.achievement_change_a_setting));
                 }
-                return false;
+                return true;
             }
         });
     }
