@@ -3,8 +3,10 @@ package co.brookesoftware.mike.smilingpooemoji;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
@@ -12,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -46,12 +49,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.addAll;
+import static java.util.Collections.sort;
 
 public class MapViewFragment extends Fragment {
 
@@ -253,10 +258,12 @@ public class MapViewFragment extends Fragment {
                                 String locName = camera.getString("Location");
 
                                 addCamera(lng, lat, lnk, lat1, lng1, lat2, lng2, locName);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
+                        startBackgroundService(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -292,6 +299,14 @@ public class MapViewFragment extends Fragment {
         alertDialog.show();
     }
 
+    private void startBackgroundService(JSONArray data) {
+        System.out.println("Start background service");
+        Intent i = new Intent(getActivity().getApplicationContext(),IntersectionService.class);
+        i.putExtra("jsondata",data.toString());
+        System.out.println("Put " + data.toString());
+        getActivity().startService(i);
+
+    }
     private View getImageWindow() {
         LinearLayout infoView = new LinearLayout(mMapView.getContext());
         LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(

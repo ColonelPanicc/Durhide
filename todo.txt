@@ -2,7 +2,7 @@ TODO LIST:
 
 + Geofencing
 + Settings being useful (dark theme)
-+ Initialise map over England
+
 
 Very low priority
 + Safety mode (turn off things) - passive mode
