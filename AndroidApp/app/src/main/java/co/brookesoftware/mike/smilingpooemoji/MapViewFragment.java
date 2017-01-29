@@ -1,9 +1,11 @@
 package co.brookesoftware.mike.smilingpooemoji;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -66,10 +68,11 @@ public class MapViewFragment extends Fragment {
 
     private MapView mMapView;
     private GoogleMap googleMap;
-    private Map<Marker,Bitmap> imagesToDisplay;
+    private Map<Marker, Bitmap> imagesToDisplay;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        imagesToDisplay = new HashMap<Marker,Bitmap>();
+        imagesToDisplay = new HashMap<Marker, Bitmap>();
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         System.out.println("inflating");
 
@@ -180,28 +183,22 @@ public class MapViewFragment extends Fragment {
                     .position(new LatLng(lat, lng))
                     .title("Camera!"));
 
-            imagesToDisplay.put(camera,bitmap);
+            imagesToDisplay.put(camera, bitmap);
             GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
-
 
                 @Override
                 public boolean onMarkerClick(Marker marker) {
                     Bitmap image = imagesToDisplay.get(marker);
-                    showMyDialog(mMapView.getContext(),image);
+                    showMyDialog(mMapView.getContext(), image);
                     return false;
                 }
             };
 
             googleMap.setOnMarkerClickListener(listener);
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (InterruptedException | TimeoutException | ExecutionException e) {
             e.printStackTrace();
         }
-
     }
 
     private void getAllCameras() throws IOException, JSONException {
@@ -237,19 +234,19 @@ public class MapViewFragment extends Fragment {
     }
 
     private void showMyDialog(Context context, Bitmap bmp) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // not showing camera names/IDs
-        dialog.setContentView(R.layout.image_dialog);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(true);
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setView(R.layout.image_dialog);
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        Dialog dialog = dialogBuilder.create();
 
         ImageView imageView = (ImageView) dialog.findViewById(R.id.imgBigCameraView);
         imageView.setImageBitmap(bmp);
-
-        //DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        //int dialogWidth = (int)(displayMetrics.widthPixels * 0.85);
-        //int dialogHeight = (int)(displayMetrics.heightPixels * 0.85);
-        //dialog.getWindow().setLayout(dialogWidth, dialogHeight);
 
         dialog.show();
     }
