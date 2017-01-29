@@ -174,7 +174,7 @@ public class MapViewFragment extends Fragment {
     }
 
     private void addCamera(final double lng, final double lat, String url, final double lat1, final double lng1,
-                           final double lat2, final double lng2) {
+                           final double lat2, final double lng2, final String camLocation) {
         // Build request
         ImageRequest request = new ImageRequest(url,
                 new Response.Listener<Bitmap>() {
@@ -195,7 +195,7 @@ public class MapViewFragment extends Fragment {
 
                         Marker marker = googleMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(lat, lng))
-                                .title("Camera!")
+                                .title(camLocation)
                                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker))
                         );
 
@@ -251,8 +251,9 @@ public class MapViewFragment extends Fragment {
 
                                 double lat2 = camera.getDouble("LatRange2");
                                 double lng2 = camera.getDouble("LongRange2");
+                                String locName = camera.getString("Location");
 
-                                addCamera(lng, lat, lnk, lat1, lng1, lat2, lng2);
+                                addCamera(lng, lat, lnk, lat1, lng1, lat2, lng2, locName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

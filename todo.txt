@@ -1,6 +1,5 @@
 TODO LIST:
 
-+ Finish off all points
 + Geofencing
 + Settings being useful (dark theme)
 + Initialise map over England
