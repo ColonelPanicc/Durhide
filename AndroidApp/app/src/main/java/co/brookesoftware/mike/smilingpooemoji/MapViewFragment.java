@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
 
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.widget.ImageView;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,6 +55,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -61,10 +66,10 @@ public class MapViewFragment extends Fragment {
 
     private MapView mMapView;
     private GoogleMap googleMap;
-
+    private Map<Marker,Bitmap> imagesToDisplay;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        imagesToDisplay = new HashMap<Marker,Bitmap>();
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         System.out.println("inflating");
 
@@ -173,8 +178,22 @@ public class MapViewFragment extends Fragment {
 
             Marker camera = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lng))
-                    .title("Camera!")
-                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+                    .title("Camera!"));
+
+            imagesToDisplay.put(camera,bitmap);
+            GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
+
+
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Bitmap image = imagesToDisplay.get(marker);
+                    showMyDialog(mMapView.getContext(),image);
+                    return false;
+                }
+            };
+
+            googleMap.setOnMarkerClickListener(listener);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -227,12 +246,27 @@ public class MapViewFragment extends Fragment {
         ImageView imageView = (ImageView) dialog.findViewById(R.id.imgBigCameraView);
         imageView.setImageBitmap(bmp);
 
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int dialogWidth = (int)(displayMetrics.widthPixels * 0.85);
-        int dialogHeight = (int)(displayMetrics.heightPixels * 0.85);
-        dialog.getWindow().setLayout(dialogWidth, dialogHeight);
+        //DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        //int dialogWidth = (int)(displayMetrics.widthPixels * 0.85);
+        //int dialogHeight = (int)(displayMetrics.heightPixels * 0.85);
+        //dialog.getWindow().setLayout(dialogWidth, dialogHeight);
 
         dialog.show();
+    }
+
+    private View getImageWindow() {
+        LinearLayout infoView = new LinearLayout(mMapView.getContext());
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        infoView.setOrientation(LinearLayout.HORIZONTAL);
+        infoView.setLayoutParams(infoViewParams);
+
+        ImageView infoImageView = new ImageView(mMapView.getContext());
+        //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+        Drawable drawable = (Drawable) getResources().getLayout(R.layout.image_window_layout);
+        infoImageView.setImageDrawable(drawable);
+        infoView.addView(infoImageView);
+        return infoView;
     }
 
 }
