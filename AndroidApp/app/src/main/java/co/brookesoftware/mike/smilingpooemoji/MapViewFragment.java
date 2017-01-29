@@ -41,6 +41,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -63,7 +64,7 @@ import java.util.Map;
 import static java.util.Collections.addAll;
 import static java.util.Collections.sort;
 
-public class MapViewFragment extends Fragment {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private GoogleMap googleMap;
@@ -95,42 +96,7 @@ public class MapViewFragment extends Fragment {
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
-                System.out.println("checking permissions");
-                // For showing a move to my location button
-                if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MainActivity.REQUEST_LOCATION_PERMISSION);
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                googleMap.getUiSettings().setMapToolbarEnabled(false);
-                googleMap.setBuildingsEnabled(false);
-                googleMap.setMyLocationEnabled(true);
-                googleMap.setMinZoomPreference(13);
-                googleMap.getUiSettings().setRotateGesturesEnabled(false);
-                googleMap.getUiSettings().setTiltGesturesEnabled(false);
-
-                CameraPosition camPos = new CameraPosition.Builder().target(new LatLng(54.7817499,-1.5872562)).zoom(15).build();
-                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-
-                try {
-                    getAllCameras();
-                } catch (IOException | JSONException e) {
-                    // todo tell user? sort of makes app unusable...
-                    e.printStackTrace();
-                }
-
-            }
-        });
+        mMapView.getMapAsync(this);
 
         return rootView;
     }
@@ -139,8 +105,8 @@ public class MapViewFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        boolean showState = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("pref_showCones",true);
-        for(Polygon p : polygons){
+        boolean showState = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("pref_showCones", true);
+        for (Polygon p : polygons) {
             p.setVisible(showState);
         }
     }
@@ -261,8 +227,7 @@ public class MapViewFragment extends Fragment {
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject camera = response.getJSONObject(i);
-                                double lat = 0;
-                                lat = camera.getDouble("Lat");
+                                double lat = camera.getDouble("Lat");
                                 double lng = camera.getDouble("Long");
                                 String lnk = camera.getString("ImgLink");
 
@@ -323,12 +288,13 @@ public class MapViewFragment extends Fragment {
 
     private void startBackgroundService(JSONArray data) {
         System.out.println("Start background service");
-        Intent i = new Intent(getActivity().getApplicationContext(),IntersectionService.class);
-        i.putExtra("jsondata",data.toString());
+        Intent i = new Intent(getActivity().getApplicationContext(), IntersectionService.class);
+        i.putExtra("jsondata", data.toString());
         System.out.println("Put " + data.toString());
         getActivity().startService(i);
 
     }
+
     private View getImageWindow() {
         LinearLayout infoView = new LinearLayout(mMapView.getContext());
         LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
@@ -349,9 +315,47 @@ public class MapViewFragment extends Fragment {
                 .addAll(vertices)
                 .strokeColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_border))))
                 .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill))))
-                .visible(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_show_cones),true)));
+                .visible(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_show_cones), true)));
         polygons.add(poly);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        System.out.println("checking permissions");
+        // For showing a move to my location button
+        if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MainActivity.REQUEST_LOCATION_PERMISSION);
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(getString(R.string.preference_key_dark_theme), true)) {
+            googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this.getActivity(), R.raw.style_json));
+        }
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.setBuildingsEnabled(false);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setMinZoomPreference(13);
+        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+        googleMap.getUiSettings().setTiltGesturesEnabled(false);
+
+        CameraPosition camPos = new CameraPosition.Builder().target(new LatLng(54.7817499, -1.5872562)).zoom(15).build();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
+        try {
+            getAllCameras();
+        } catch (IOException | JSONException e) {
+            // todo tell user? sort of makes app unusable...
+            e.printStackTrace();
+        }
+    }
 }
 
