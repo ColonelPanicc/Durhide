@@ -5,7 +5,7 @@
 
         <item
             android:id="@+id/btnAchievements"
-            android:icon="@drawable/ic_achieve"
+            android:icon="@mipmap/ic_achieve"
             android:title="@string/nav_menu_title_achievements" />
         <item
             android:id="@+id/nav_slideshow"

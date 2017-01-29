@@ -227,7 +227,6 @@ public class MainActivity extends AppCompatActivity
 
         // Run map position initialisation
          ((MapViewFragment) getFragmentManager().findFragmentById(R.id.map_view_fragment)).onConnected();
-
     }
 
     @Override
