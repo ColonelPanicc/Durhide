@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.json.JSONArray;
@@ -59,12 +61,15 @@ public class MapViewFragment extends Fragment {
     private GoogleMap googleMap;
     private Map<Marker, Bitmap> imagesToDisplay;
 
+    private List<Polygon> polygons;
+
     private RequestQueue requestQueue;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         imagesToDisplay = new HashMap<Marker, Bitmap>();
+        polygons = new ArrayList<>();
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         System.out.println("inflating");
 
@@ -122,6 +127,10 @@ public class MapViewFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        boolean showState = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("pref_showCones",true);
+        for(Polygon p : polygons){
+            p.setVisible(showState);
+        }
     }
 
     @Override
@@ -309,10 +318,12 @@ public class MapViewFragment extends Fragment {
     }
 
     private void addPolygon(List<LatLng> vertices) {
-        googleMap.addPolygon(new PolygonOptions()
+        Polygon poly = googleMap.addPolygon(new PolygonOptions()
                 .addAll(vertices)
                 .strokeColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_border))))
-                .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill)))));
+                .fillColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(this.getActivity(), R.color.polygon_fill))))
+                .visible(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("pref_showCones",true)));
+        polygons.add(poly);
     }
 
 }
