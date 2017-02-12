@@ -1,3 +1,5 @@
+![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/banner.png "Banner")
+
 # Durhide
 Durhide is an app combining government traffic camera data with a visual map, to show the locations of these cameras, live feeds, and notifications when you are passing them. Think of this as an app both for governments and those who fear 'Big Brother' (not the TV show, although that's equally as scary).
 
@@ -14,6 +16,3 @@ The app shall be available on the Play Store shortly.
 # Data
 The data used for this project can be found at [Data Mill North](https://datamillnorth.org/dataset/traffic-web-cameras).
 
-# Art, featuring Tom Lafferty
-
-![alt text](https://github.com/OhmGeek/Durhack/blob/master/img/banner.png "Banner")
